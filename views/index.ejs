@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Chat Com Socket io</h1>
+    <div id="chat">
+
+    </div>
+    <br>
+    <input type="text" name="message" id="message" placeholder="message">
+    <input type="text" name="username" id="username" placeholder="username">
+    <br>
+    <button onclick="sendMessage()">Enviar</button>
+</body>
+<script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
+<script>
+    const socket = io("http://localhost:3000")
+    socket.on("disconnect", data => {
+        console.log(`Disconnected`)
+    })
+    socket.on("showMessage", data => {
+        console.log(data)
+        const chatField = document.getElementById("chat")
+        const pElement = document.createElement("p")
+        pElement.innerHTML = `${data.username}: ${data.message}`
+        chatField.append(pElement)
+        
+    })
+    function sendMessage(){
+        const messageField = document.getElementById("message")
+        const usernameField = document.getElementById("username")
+        const message = messageField.value
+        const username = usernameField.value
+
+        socket.emit("sendMessage",{message, username})
+    }
+</script>
+</html>
